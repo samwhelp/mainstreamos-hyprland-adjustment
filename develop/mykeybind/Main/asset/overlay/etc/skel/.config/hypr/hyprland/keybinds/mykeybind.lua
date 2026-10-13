@@ -50,8 +50,8 @@ hl.bind("ALT + mouse:274", hl.dsp.window.float({ action = "toggle" }), { mouse =
 
 
 -- Switch workspace with `Super + [Middle Mouse Button Scroll]`
-hl.bind("SUPER + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind("SUPER + mouse_up",   hl.dsp.focus({ workspace = "e-1" }))
+hl.bind("SUPER + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 
 
 
@@ -135,8 +135,9 @@ hl.bind("ALT + SHIFT + s", hl.dsp.exec_cmd("nwg-look"))
 -- ## Keybindings / Keybind / Application / Volume Control
 --------------------------------------------------------------------------------
 
-hl.bind("ALT + SHIFT + v", hl.dsp.exec_cmd("mate-volume-control"))
-
+-- hl.bind("ALT + SHIFT + v", hl.dsp.exec_cmd("mate-volume-control"))
+-- hl.bind("ALT + SHIFT + v", hl.dsp.exec_cmd("pavucontrol"))
+hl.bind("ALT + SHIFT + v", hl.dsp.exec_cmd("pavucontrol-qt"))
 
 
 
@@ -218,7 +219,7 @@ hl.bind("ALT + CTRL + z", hl.dsp.exec_cmd("systemctl -i poweroff"))
 
 
 --------------------------------------------------------------------------------
--- ## Keybindings / Keybind / Window / Main Control
+-- ## Keybindings / Keybind / Window / Control
 --------------------------------------------------------------------------------
 
 -- Window Close
@@ -236,7 +237,7 @@ hl.bind("SUPER + w", hl.dsp.window.fullscreen({ mode = "maximized", action = "to
 hl.bind("SUPER + Escape", hl.dsp.window.float({ action = "toggle" }))
 
 -- Window Move Center
-hl.bind("SUPER + m", hl.dsp.window.center({ action = "toggle" }))
+hl.bind("SUPER + m", hl.dsp.window.center())
 
 
 
@@ -245,8 +246,161 @@ hl.bind("SUPER + m", hl.dsp.window.center({ action = "toggle" }))
 -- ## Keybindings / Keybind / Window / Focus
 --------------------------------------------------------------------------------
 
--- Move focus with `Super + <Arrow Key>`
+-- Focus window with `Super + <Arrow Key>`
 hl.bind("SUPER + up", hl.dsp.focus({ direction = "up" }))
 hl.bind("SUPER + down", hl.dsp.focus({ direction = "down" }))
 hl.bind("SUPER + left", hl.dsp.focus({ direction = "left" }))
 hl.bind("SUPER + right", hl.dsp.focus({ direction = "right" }))
+
+-- Focus window with `Super + [k,j,h,l]`
+hl.bind("SUPER + k", hl.dsp.focus({ direction = "up" }))
+hl.bind("SUPER + j", hl.dsp.focus({ direction = "down" }))
+hl.bind("SUPER + h", hl.dsp.focus({ direction = "left" }))
+hl.bind("SUPER + l", hl.dsp.focus({ direction = "right" }))
+
+
+-- Focus window with `Super + [a,s]`
+hl.bind("SUPER + a", function()
+	hl.dispatch(hl.dsp.window.cycle_next())
+	--hl.dispatch(hl.dsp.window.cycle_next({ next = false }))
+	hl.dispatch(hl.dsp.window.bring_to_top())
+end)
+
+hl.bind("SUPER + s", function()
+	hl.dispatch(hl.dsp.window.cycle_next({ next = true }))
+	hl.dispatch(hl.dsp.window.bring_to_top())
+end)
+
+
+-- Focus master window on layout master
+hl.bind("SUPER + c", function()
+	hl.dispatch(hl.dsp.layout("focusmaster"))
+	hl.dispatch(hl.dsp.window.bring_to_top())
+end)
+
+-- hl.bind("SUPER + a", function()
+-- 	hl.dispatch(hl.dsp.layout("cycleprev"))
+-- 	hl.dispatch(hl.dsp.window.bring_to_top())
+-- end)
+
+-- hl.bind("SUPER + s", function()
+-- 	hl.dispatch(hl.dsp.layout("cyclenext"))
+-- 	hl.dispatch(hl.dsp.window.bring_to_top())
+-- end)
+
+
+
+
+--------------------------------------------------------------------------------
+-- ## Keybindings / Keybind / Window / Swap
+--------------------------------------------------------------------------------
+
+-- Swap window with `Super + Shift + [a,s]` on layout master
+hl.bind("SUPER + SHIFT + a", function()
+	hl.dispatch(hl.dsp.layout("swapprev"))
+	hl.dispatch(hl.dsp.window.bring_to_top())
+end)
+
+hl.bind("SUPER + SHIFT + s", function()
+	hl.dispatch(hl.dsp.layout("swapnext"))
+	hl.dispatch(hl.dsp.window.bring_to_top())
+end)
+
+
+-- Swap master window on layout master
+hl.bind("SUPER + SHIFT + c", function()
+	hl.dispatnch(hl.dsp.layout("swapwithmaster"))
+	hl.dispatch(hl.dsp.window.bring_to_top())
+end)
+
+
+-- Swap window on layout master with `Super +[grave,Tab]`
+-- hl.bind("SUPER + grave", function()
+-- 	hl.dispatch(hl.dsp.window.swap({ prev = true }))
+-- 	hl.dispatch(hl.dsp.window.bring_to_top())
+-- end)
+
+-- hl.bind("SUPER + Tab", function()
+-- 	hl.dispatch(hl.dsp.window.swap({ next = true }))
+-- 	hl.dispatch(hl.dsp.window.bring_to_top())
+-- end)
+
+
+
+
+--------------------------------------------------------------------------------
+-- ## Keybindings / Keybind / Workspace
+--------------------------------------------------------------------------------
+
+
+
+
+--------------------------------------------------------------------------------
+-- ## Keybindings / Keybind / Workspace / Control
+--------------------------------------------------------------------------------
+
+
+
+
+--------------------------------------------------------------------------------
+-- ## Keybindings / Keybind / Workspace / Focus
+--------------------------------------------------------------------------------
+
+-- Switch workspaces with `Alt + [a,s]`
+hl.bind("ALT + a",   hl.dsp.focus({ workspace = "e-1" }))
+hl.bind("ALT + s", hl.dsp.focus({ workspace = "e+1" }))
+
+-- Switch previous workspaces with `Alt + z`
+hl.bind("ALT + z", hl.dsp.focus({ workspace = "previous" }))
+
+
+-- Switch worksapce with `Alt + CTRL + [0-9]`
+-- Move active window to a workspace with `ALT + SHIFT + [0-9]`
+for i = 1, 10 do
+	local key = i % 10 -- 10 maps to key 0
+	hl.bind("ALT + CTRL + " .. key, hl.dsp.focus({ workspace = i}))
+	hl.bind("ALT + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
+end
+
+
+-- Switch worksapce with `SUPER + [0-9]`
+-- Move active window to a workspace with `SUPER + SHIFT + [0-9]`
+for i = 1, 10 do
+	local key = i % 10 -- 10 maps to key 0
+	hl.bind("SUPER + " .. key, hl.dsp.focus({ workspace = i}))
+	hl.bind("SUPER + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
+end
+
+
+
+
+--------------------------------------------------------------------------------
+-- ## Keybindings / Keybind / Brightness
+--------------------------------------------------------------------------------
+
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%+"), { locked = true, repeating = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("brightnessctl -e4 -n2 set 5%-"), { locked = true, repeating = true })
+
+
+
+
+--------------------------------------------------------------------------------
+-- ## Keybindings / Keybind / Volume
+--------------------------------------------------------------------------------
+
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("wpctl set-volume -l 1 @DEFAULT_AUDIO_SINK@ 5%+"), { locked = true, repeating = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"), { locked = true, repeating = true })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"), { locked = true, repeating = true })
+hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), { locked = true, repeating = true })
+
+
+
+
+--------------------------------------------------------------------------------
+-- ## Keybindings / Keybind / Player
+--------------------------------------------------------------------------------
+
+hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
+hl.bind("XF86AudioPause", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioPlay", hl.dsp.exec_cmd("playerctl play-pause"), { locked = true })
+hl.bind("XF86AudioPrev", hl.dsp.exec_cmd("playerctl previous"), { locked = true })
